@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "USBMouse.h"
 #include "arm_book_lib.h"
-
+#include "Debounced.h"
 
 //USBMouse mouse;
 
@@ -9,16 +9,15 @@ Serial uartUsb(USBTX, USBRX);
 DigitalOut led(LED1);
 
 // https://os.mbed.com/docs/mbed-os/v6.10/apis/timeout.html
+/*
 InterruptIn pin(BUTTON1);
 Timeout riseDelay;
 Timeout fallDelay;
 
-
-bool rising = false;
-bool falling = false;
-bool risen = false;
-bool fallen = false;
-
+bool rising = false;    //
+bool falling = false;   //
+bool risen = false;     //
+bool fallen = false;    //
 
 void checkRise() {
    risen = pin.read();
@@ -46,7 +45,7 @@ void fall() {
       falling = true;
    }
 }
-
+*/
 
 int main() {
     uartUsb.printf("\r\nSlither USB version 0.0.3\r\n");
@@ -56,20 +55,22 @@ int main() {
     int32_t angle = 0;
     DigitalOut led(LED1);*/
 
-    pin.fall(&fall);
-    pin.rise(&rise);
+    Debounced d(BUTTON1);
+
+//    pin.fall(&fall);
+//    pin.rise(&rise);
     while(1) {
-       if (fallen) {
+       if (d.isReleased()) {
           uartUsb.printf("button release\r\n");
           ThisThread::sleep_for(0.040);
-          fallen = false;
+//          fallen = false;
        }
-       if (risen) {
+       if (d.isPressed()) {
           uartUsb.printf("button press\r\n");
           ThisThread::sleep_for(0.040);
-          risen = false;
+//          risen = false;
        }
-       led = pin.read();
+       led = d.read();
 
     }
 /*
