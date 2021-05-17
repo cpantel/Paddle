@@ -1,15 +1,32 @@
 #include "Debounced.h"
 
+void Debounced::notifyRise() {
+   mouse.press(MOUSE_LEFT);
+}
+
+
+void Debounced::notifyFall() {
+   mouse.release(MOUSE_LEFT);
+}
+
 void Debounced::checkRise() {
-   risen = interrupt.read();
-   rising = false;
    riseDelay.detach();
+   risen = interrupt.read();
+   if (risen) {
+      fallen = false;
+      queue->call(callback(this,&Debounced::notifyRise));
+   }
+   rising = false;
 }
 
 void Debounced::checkFall() {
-   fallen = ! interrupt.read();
-   falling = false;
    fallDelay.detach();
+   fallen = ! interrupt.read();
+   if (fallen) {
+      risen = false;
+      queue->call(callback(this,&Debounced::notifyFall));
+   }
+   falling = false;
 }
 
 void Debounced::rise() {

@@ -1,16 +1,17 @@
 #ifndef _DEBOUNCED_H_
 #define _DEBOUNCED_H_
 #include "mbed.h"
+
+
+#include "USBMouse.h"  //
+
 class Debounced {
 public:
-   Debounced(PinName pin): interrupt(pin) {
+   Debounced(PinName pin,EventQueue * queue): interrupt(pin), queue(queue) {
       interrupt.rise(callback(this, &Debounced::rise));
       interrupt.fall(callback(this, &Debounced::fall));
    }
-   void rise();
-   void fall();
-   void checkRise();
-   void checkFall();
+
    int read();
    bool isPressed();
    bool isReleased();
@@ -18,13 +19,23 @@ public:
 
 private:
    InterruptIn interrupt;
-   PinName pin;
+   EventQueue * queue;
+
+   USBMouse mouse;                     //
+
+
    Timeout riseDelay;
    Timeout fallDelay;
    bool rising = false;
    bool falling = false;
    bool risen = false;
    bool fallen = false;
+   void rise();
+   void fall();
+   void checkRise();
+   void checkFall();
+   void notifyRise();      //
+   void notifyFall();      //
 
 };
 
