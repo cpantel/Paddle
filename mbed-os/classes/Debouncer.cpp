@@ -1,59 +1,59 @@
-#include "Debounced.h"
+#include "Debouncer.h"
 
-void Debounced::notifyRise() {
+void Debouncer::notifyRise() {
    mouse.press(MOUSE_LEFT);
 }
 
 
-void Debounced::notifyFall() {
+void Debouncer::notifyFall() {
    mouse.release(MOUSE_LEFT);
 }
 
-void Debounced::checkRise() {
+void Debouncer::checkRise() {
    riseDelay.detach();
    risen = interrupt.read();
    if (risen) {
       fallen = false;
-      queue->call(callback(this,&Debounced::notifyRise));
+      queue->call(callback(this,&Debouncer::notifyRise));
    }
    rising = false;
 }
 
-void Debounced::checkFall() {
+void Debouncer::checkFall() {
    fallDelay.detach();
    fallen = ! interrupt.read();
    if (fallen) {
       risen = false;
-      queue->call(callback(this,&Debounced::notifyFall));
+      queue->call(callback(this,&Debouncer::notifyFall));
    }
    falling = false;
 }
 
-void Debounced::rise() {
+void Debouncer::rise() {
    if (! rising) {
-      riseDelay.attach(callback(this,&Debounced::checkRise), 0.040);
+      riseDelay.attach(callback(this,&Debouncer::checkRise), 0.040);
       rising = true;
    }
 }
 
-void Debounced::fall() {
+void Debouncer::fall() {
    if (! falling) {
-      fallDelay.attach(callback(this,&Debounced::checkFall), 0.040);
+      fallDelay.attach(callback(this,&Debouncer::checkFall), 0.040);
       falling = true;
    }
 }
 
-int Debounced::read() {
+int Debouncer::read() {
    return interrupt.read();
 }
 
-bool Debounced::isPressed() {
+bool Debouncer::isPressed() {
    bool t = risen;
    risen = false;
    return t;
 }
 
-bool Debounced::isReleased() {
+bool Debouncer::isReleased() {
    bool t = fallen;
    fallen = false;
    return t;

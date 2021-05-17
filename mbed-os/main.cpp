@@ -1,16 +1,12 @@
 #include "mbed.h"
 #include "USBMouse.h"
 #include "arm_book_lib.h"
-#include "Debounced.h"
+#include "Debouncer.h"
 
 
 
 Serial uartUsb(USBTX, USBRX);
 DigitalOut led(LED1);
-
-
-
-
 
 
 int main() {
@@ -23,7 +19,8 @@ int main() {
 
     EventQueue queue;
 
-    Debounced d(BUTTON1, &queue);
+    Debouncer leftButton(BUTTON1, &queue);
+
 
 
     Thread eventThread;

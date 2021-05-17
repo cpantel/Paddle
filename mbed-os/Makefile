@@ -992,7 +992,7 @@ OBJECTS += mbed-os/targets/TARGET_STM/trng_api.o
 OBJECTS += mbed-os/targets/TARGET_STM/us_ticker.o
 OBJECTS += mbed-os/targets/TARGET_STM/watchdog_api.o
 
-OBJECTS += classes/Debounced.o
+OBJECTS += classes/Debouncer.o
 INCLUDE_PATHS += -I../classes
 
 INCLUDE_PATHS += -I../

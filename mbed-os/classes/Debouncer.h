@@ -1,15 +1,15 @@
-#ifndef _DEBOUNCED_H_
-#define _DEBOUNCED_H_
+#ifndef _DEBOUNCER_H_
+#define _DEBOUNCER_H_
 #include "mbed.h"
 
 
 #include "USBMouse.h"  //
 
-class Debounced {
+class Debouncer {
 public:
-   Debounced(PinName pin,EventQueue * queue): interrupt(pin), queue(queue) {
-      interrupt.rise(callback(this, &Debounced::rise));
-      interrupt.fall(callback(this, &Debounced::fall));
+   Debouncer(PinName pin,EventQueue * queue): interrupt(pin), queue(queue) {
+      interrupt.rise(callback(this, &Debouncer::rise));
+      interrupt.fall(callback(this, &Debouncer::fall));
    }
 
    int read();
@@ -39,4 +39,4 @@ private:
 
 };
 
-#endif // _DEBOUNCED_H_
+#endif // _DEBOUNCER_H_
