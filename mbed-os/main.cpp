@@ -2,6 +2,7 @@
 #include "USBMouse.h"
 #include "arm_book_lib.h"
 #include "Debouncer.h"
+#include "MouseClick.h"
 
 
 
@@ -10,7 +11,9 @@ DigitalOut led(LED1);
 
 
 int main() {
-    uartUsb.printf("\r\nSlither USB version 0.0.4\r\n");
+    uartUsb.printf("\r\nSlither USB version 0.0.5\r\n");
+    USBMouse mouse;
+    MouseClick leftButton(&mouse, MOUSE_LEFT);
 /*    int16_t x = 0;
     int16_t y = 0;
     int32_t radius = 4;
@@ -19,8 +22,15 @@ int main() {
 
     EventQueue queue;
 
-    Debouncer leftButton(BUTTON1, &queue);
+//    Debouncer leftButton(BUTTON1, &queue);
+//    Debouncer leftButtonDebouncer(BUTTON1, &queue, &leftButton, &notifyRise, &notifyFall);
 
+//    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release);
+      Debouncer leftButtonDebouncer(BUTTON1, &queue,
+                 callback(&leftButton, &MouseClick::press),
+                 callback(&leftButton, &MouseClick::release));
+//    Debouncer encoderClkDebouncer(xxxxx, &queue, &encoder, &Encoder::notifyRiseClk, &Encoder::notifyFallClk);
+//    Debouncer encoderDtDebouncer(xxxxx, &queue, &encoder, &Encoder::notifyRiseDt, &Encoder::notifyFallDt);
 
 
     Thread eventThread;

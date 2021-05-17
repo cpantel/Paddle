@@ -1,12 +1,16 @@
 #include "Debouncer.h"
 
 void Debouncer::notifyRise() {
-   mouse.press(MOUSE_LEFT);
+    riseFunction;
+//   callback(&object,&riseFunction);
+//   mouse.press(MOUSE_LEFT);
 }
 
 
 void Debouncer::notifyFall() {
-   mouse.release(MOUSE_LEFT);
+    fallFunction;
+//   callback(&object,&fallFunction);
+//   mouse.release(MOUSE_LEFT);
 }
 
 void Debouncer::checkRise() {

@@ -5,9 +5,26 @@
 
 #include "USBMouse.h"  //
 
+/*template<typename T>
 class Debouncer {
 public:
-   Debouncer(PinName pin,EventQueue * queue): interrupt(pin), queue(queue) {
+   Debouncer<T>(PinName pin,EventQueue * queue, T* obj, void (MouseClick::*)() riseFunction,  void (MouseClick::*)() fallFunction )
+   : interrupt(pin),
+     queue(queue),
+     object(obj),
+     riseFunction(riseFunction),
+     fallFunction(fallFunction)*/
+
+
+
+class Debouncer {
+public:
+   Debouncer(PinName pin,EventQueue * queue, Callback<void()> riseFunction, Callback<void()> fallFunction )
+   : interrupt(pin),
+     queue(queue),
+     riseFunction(riseFunction),
+     fallFunction(fallFunction)
+   {
       interrupt.rise(callback(this, &Debouncer::rise));
       interrupt.fall(callback(this, &Debouncer::fall));
    }
@@ -21,6 +38,12 @@ private:
    InterruptIn interrupt;
    EventQueue * queue;
 
+    Callback<void()> riseFunction;
+    Callback<void()> fallFunction;
+
+  // T* object;
+//   T riseFunction;
+  // T fallFunction;
    USBMouse mouse;                     //
 
 
