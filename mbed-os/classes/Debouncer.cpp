@@ -1,22 +1,20 @@
 #include "Debouncer.h"
 
 void Debouncer::notifyRise() {
-    riseFunction;
-//   callback(&object,&riseFunction);
-//   mouse.press(MOUSE_LEFT);
+   (object->*riseFunction)();
+   led3 = ON;
 }
 
-
 void Debouncer::notifyFall() {
-    fallFunction;
-//   callback(&object,&fallFunction);
-//   mouse.release(MOUSE_LEFT);
+   (object->*fallFunction)();
+   led3 = OFF;
 }
 
 void Debouncer::checkRise() {
    riseDelay.detach();
    risen = interrupt.read();
    if (risen) {
+      led2 = ON;
       fallen = false;
       queue->call(callback(this,&Debouncer::notifyRise));
    }
@@ -27,6 +25,7 @@ void Debouncer::checkFall() {
    fallDelay.detach();
    fallen = ! interrupt.read();
    if (fallen) {
+      led2 = OFF;
       risen = false;
       queue->call(callback(this,&Debouncer::notifyFall));
    }
@@ -35,6 +34,7 @@ void Debouncer::checkFall() {
 
 void Debouncer::rise() {
    if (! rising) {
+      led1= ON;
       riseDelay.attach(callback(this,&Debouncer::checkRise), 0.040);
       rising = true;
    }
@@ -42,6 +42,7 @@ void Debouncer::rise() {
 
 void Debouncer::fall() {
    if (! falling) {
+      led1 = OFF;
       fallDelay.attach(callback(this,&Debouncer::checkFall), 0.040);
       falling = true;
    }

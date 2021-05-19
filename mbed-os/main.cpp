@@ -7,34 +7,31 @@
 
 
 Serial uartUsb(USBTX, USBRX);
-DigitalOut led(LED1);
 
 
 int main() {
-    uartUsb.printf("\r\nSlither USB version 0.0.5\r\n");
+    uartUsb.printf("\r\nSlither USB version 0.0.7\r\n");
     USBMouse mouse;
+//    uartUsb.printf("checkpoint 1\r\n");
     MouseClick leftButton(&mouse, MOUSE_LEFT);
+//    uartUsb.printf("checkpoint 0\r\n");
 /*    int16_t x = 0;
     int16_t y = 0;
     int32_t radius = 4;
-    int32_t angle = 0;
-    DigitalOut led(LED1);*/
+    int32_t angle = 0;*/
 
     EventQueue queue;
+//    uartUsb.printf("checkpoint 2\r\n");
 
-//    Debouncer leftButton(BUTTON1, &queue);
-//    Debouncer leftButtonDebouncer(BUTTON1, &queue, &leftButton, &notifyRise, &notifyFall);
-
-//    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release);
-      Debouncer leftButtonDebouncer(BUTTON1, &queue,
-                 callback(&leftButton, &MouseClick::press),
-                 callback(&leftButton, &MouseClick::release));
-//    Debouncer encoderClkDebouncer(xxxxx, &queue, &encoder, &Encoder::notifyRiseClk, &Encoder::notifyFallClk);
-//    Debouncer encoderDtDebouncer(xxxxx, &queue, &encoder, &Encoder::notifyRiseDt, &Encoder::notifyFallDt);
+    Debouncer leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release);
+//    uartUsb.printf("checkpoint 3\r\n");
 
 
     Thread eventThread;
+//    uartUsb.printf("checkpoint 4\r\n");
     eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
+//    uartUsb.printf("checkpoint 5\r\n");
+
 
     wait(osWaitForever);
 

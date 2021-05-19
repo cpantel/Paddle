@@ -1,29 +1,22 @@
 #ifndef _DEBOUNCER_H_
 #define _DEBOUNCER_H_
 #include "mbed.h"
+#include "arm_book_lib.h"
+#include "MouseClick.h"
 
 
-#include "USBMouse.h"  //
-
-/*template<typename T>
-class Debouncer {
+class Debouncer{
 public:
-   Debouncer<T>(PinName pin,EventQueue * queue, T* obj, void (MouseClick::*)() riseFunction,  void (MouseClick::*)() fallFunction )
+   Debouncer(PinName pin,EventQueue * theQueue, MouseClick* theObject, void(MouseClick::*theRiseFunction)(), void(MouseClick::*theFallFunction)(), float theDebounceDelay = 0.040 )
    : interrupt(pin),
-     queue(queue),
-     object(obj),
-     riseFunction(riseFunction),
-     fallFunction(fallFunction)*/
-
-
-
-class Debouncer {
-public:
-   Debouncer(PinName pin,EventQueue * queue, Callback<void()> riseFunction, Callback<void()> fallFunction )
-   : interrupt(pin),
-     queue(queue),
-     riseFunction(riseFunction),
-     fallFunction(fallFunction)
+     queue(theQueue),
+     object(theObject),
+     riseFunction(theRiseFunction),
+     fallFunction(theFallFunction),
+     debounceDelay(theDebounceDelay),
+     led1(LED1),
+     led2(LED2),
+     led3(LED3)
    {
       interrupt.rise(callback(this, &Debouncer::rise));
       interrupt.fall(callback(this, &Debouncer::fall));
@@ -37,15 +30,15 @@ public:
 private:
    InterruptIn interrupt;
    EventQueue * queue;
+   MouseClick * object;
 
-    Callback<void()> riseFunction;
-    Callback<void()> fallFunction;
+   void (MouseClick::*riseFunction)();
+   void (MouseClick::*fallFunction)();
+   float debounceDelay;
 
-  // T* object;
-//   T riseFunction;
-  // T fallFunction;
-   USBMouse mouse;                     //
-
+   DigitalOut led1;
+   DigitalOut led2;
+   DigitalOut led3;
 
    Timeout riseDelay;
    Timeout fallDelay;
