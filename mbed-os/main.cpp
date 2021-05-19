@@ -2,12 +2,13 @@
 #include "USBMouse.h"
 #include "arm_book_lib.h"
 #include "Debouncer.h"
+#include "Encoder.h"
 #include "MouseClick.h"
 
 Serial uartUsb(USBTX, USBRX);
 
 int main() {
-    uartUsb.printf("\r\nSlither USB version 0.0.8\r\n");
+    uartUsb.printf("\r\nSlither USB version 0.0.9\r\n");
     USBMouse mouse;
 //    uartUsb.printf("checkpoint 1\r\n");
     MouseClick leftButton(&mouse, MOUSE_LEFT);
@@ -21,9 +22,9 @@ int main() {
 //    uartUsb.printf("checkpoint 2\r\n");
 
     Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release);
-//    Decoder decoder(&mouse);
-//    Debouncer<Decoder> clkEncoderDebouncer(GPIOx, &queue, &decoder, &Decoder::clkUp, &Decoder::clkDown);
-//    Debouncer<Decoder> clkEncoderDebouncer(GPIOy, &queue, &decoder, &Decoder::dtUp, &Decoder::dtDown);
+    Encoder decoder(&mouse);
+    Debouncer<Encoder> clkEncoderDebouncer(PC_8, &queue, &decoder, &Encoder::clkUp, &Encoder::clkDown);
+    Debouncer<Encoder> dtEncoderDebouncer(PC_9, &queue, &decoder, &Encoder::dtUp, &Encoder::dtDown);
 //    uartUsb.printf("checkpoint 3\r\n");
 
 

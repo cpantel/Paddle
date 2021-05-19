@@ -50,6 +50,7 @@ PROJECT := slitherUSBMouse
 OBJECTS += main.o
 OBJECTS += classes/Debouncer.o
 OBJECTS += classes/MouseClick.o
+OBJECTS += classes/Encoder.o
 OBJECTS += mbed-os/cmsis/TARGET_CORTEX_M/mbed_tz_context.o
 OBJECTS += mbed-os/components/802.15.4_RF/atmel-rf-driver/source/NanostackRfPhyAtmel.o
 OBJECTS += mbed-os/components/802.15.4_RF/atmel-rf-driver/source/at24mac.o
