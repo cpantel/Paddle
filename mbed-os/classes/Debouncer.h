@@ -2,12 +2,11 @@
 #define _DEBOUNCER_H_
 #include "mbed.h"
 #include "arm_book_lib.h"
-#include "MouseClick.h"
 
-
+template <typename T>
 class Debouncer{
 public:
-   Debouncer(PinName pin,EventQueue * theQueue, MouseClick* theObject, void(MouseClick::*theRiseFunction)(), void(MouseClick::*theFallFunction)(), float theDebounceDelay = 0.040 )
+   Debouncer(PinName pin,EventQueue * theQueue, T* theObject, void(T::*theRiseFunction)(), void(T::*theFallFunction)(), float theDebounceDelay = 0.040 )
    : interrupt(pin),
      queue(theQueue),
      object(theObject),
@@ -30,10 +29,10 @@ public:
 private:
    InterruptIn interrupt;
    EventQueue * queue;
-   MouseClick * object;
+   T * object;
 
-   void (MouseClick::*riseFunction)();
-   void (MouseClick::*fallFunction)();
+   void (T::*riseFunction)();
+   void (T::*fallFunction)();
    float debounceDelay;
 
    DigitalOut led1;
@@ -54,5 +53,80 @@ private:
    void notifyFall();      //
 
 };
+
+#include "Debouncer.h"
+
+template <typename T>
+void Debouncer<T>::notifyRise() {
+   (object->*riseFunction)();
+   led3 = ON;
+}
+
+template <typename T>
+void Debouncer<T>::notifyFall() {
+   (object->*fallFunction)();
+   led3 = OFF;
+}
+
+template <typename T>
+void Debouncer<T>::checkRise() {
+   riseDelay.detach();
+   risen = interrupt.read();
+   if (risen) {
+      led2 = ON;
+      fallen = false;
+      queue->call(callback(this,&Debouncer<T>::notifyRise));
+   }
+   rising = false;
+}
+
+template <typename T>
+void Debouncer<T>::checkFall() {
+   fallDelay.detach();
+   fallen = ! interrupt.read();
+   if (fallen) {
+      led2 = OFF;
+      risen = false;
+      queue->call(callback(this,&Debouncer<T>::notifyFall));
+   }
+   falling = false;
+}
+
+template <typename T>
+void Debouncer<T>::rise() {
+   if (! rising) {
+      led1= ON;
+      riseDelay.attach(callback(this,&Debouncer<T>::checkRise), 0.040);
+      rising = true;
+   }
+}
+
+template <typename T>
+void Debouncer<T>::fall() {
+   if (! falling) {
+      led1 = OFF;
+      fallDelay.attach(callback(this,&Debouncer<T>::checkFall), 0.040);
+      falling = true;
+   }
+}
+
+template <typename T>
+int Debouncer<T>::read() {
+   return interrupt.read();
+}
+
+template <typename T>
+bool Debouncer<T>::isPressed() {
+   bool t = risen;
+   risen = false;
+   return t;
+}
+template <typename T>
+bool Debouncer<T>::isReleased() {
+   bool t = fallen;
+   fallen = false;
+   return t;
+}
+
 
 #endif // _DEBOUNCER_H_

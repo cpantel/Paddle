@@ -48,6 +48,8 @@ PROJECT := slitherUSBMouse
 
 
 OBJECTS += main.o
+OBJECTS += classes/Debouncer.o
+OBJECTS += classes/MouseClick.o
 OBJECTS += mbed-os/cmsis/TARGET_CORTEX_M/mbed_tz_context.o
 OBJECTS += mbed-os/components/802.15.4_RF/atmel-rf-driver/source/NanostackRfPhyAtmel.o
 OBJECTS += mbed-os/components/802.15.4_RF/atmel-rf-driver/source/at24mac.o
@@ -992,8 +994,6 @@ OBJECTS += mbed-os/targets/TARGET_STM/trng_api.o
 OBJECTS += mbed-os/targets/TARGET_STM/us_ticker.o
 OBJECTS += mbed-os/targets/TARGET_STM/watchdog_api.o
 
-OBJECTS += classes/Debouncer.o
-OBJECTS += classes/MouseClick.o
 INCLUDE_PATHS += -I../classes
 
 INCLUDE_PATHS += -I../
