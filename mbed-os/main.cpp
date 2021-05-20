@@ -8,56 +8,25 @@
 Serial uartUsb(USBTX, USBRX);
 
 int main() {
-    uartUsb.printf("\r\nSlither USB version 0.0.9\r\n");
-    USBMouse mouse;
-//    uartUsb.printf("checkpoint 1\r\n");
-    MouseClick leftButton(&mouse, MOUSE_LEFT);
-//    uartUsb.printf("checkpoint 0\r\n");
-/*    int16_t x = 0;
-    int16_t y = 0;
-    int32_t radius = 4;
-    int32_t angle = 0;*/
+    uartUsb.printf("\r\nSlither USB version 0.1.15\r\n");
 
     EventQueue queue;
-//    uartUsb.printf("checkpoint 2\r\n");
-
-    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release);
-    Encoder decoder(&mouse);
-    Debouncer<Encoder> clkEncoderDebouncer(PC_8, &queue, &decoder, &Encoder::clkUp, &Encoder::clkDown);
-    Debouncer<Encoder> dtEncoderDebouncer(PC_9, &queue, &decoder, &Encoder::dtUp, &Encoder::dtDown);
-//    uartUsb.printf("checkpoint 3\r\n");
-
-
     Thread eventThread;
-//    uartUsb.printf("checkpoint 4\r\n");
-    eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
-//    uartUsb.printf("checkpoint 5\r\n");
 
+    uartUsb.printf("Waiting for USB connection...");
+
+    USBMouse mouse;
+
+    uartUsb.printf(" connected!\r\n");
+
+    MouseClick leftButton(&mouse, MOUSE_LEFT);
+    Encoder encoder(&mouse);
+
+    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release); // BUTTON1/ PC_10
+    Debouncer<Encoder> clkEncoderDebouncer(PC_9, &queue, &encoder, &Encoder::clkUp, &Encoder::clkDown);
+    Debouncer<Encoder> dtEncoderDebouncer(PC_8, &queue, &encoder, &Encoder::dtUp, &Encoder::dtDown);
+
+    eventThread.start(callback(&queue, &EventQueue::dispatch_forever));
 
     wait(osWaitForever);
-
-/*
-    int skip = 0;
-    while (1) {
-        // radius = analogRead;
-        // angle = encoderPosition;
-        // mouse.press(1);
-        // mouse.release(1);
-        angle += 1;
-        if (angle > 360) {
-            angle = 0;
-        } else if (angle < 0) {
-            angle = 360 + angle;
-        }
-
-        x = cos((double)angle*3.14/180.0)*radius;
-        y = sin((double)angle*3.14/180.0)*radius;
-
-        mouse.move(x, y);
-
-        delay(100);
-
-           uartUsb.printf( "x: %d y: %d\r\n",x,y);
-    }
-*/
 }

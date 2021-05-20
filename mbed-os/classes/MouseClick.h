@@ -6,12 +6,17 @@
 
 class MouseClick {
 public:
-   MouseClick(USBMouse * mouse, uint8_t button): mouse(mouse),button(button) { }
+   MouseClick(USBMouse * mouse, uint8_t button)
+    : mouse(mouse),
+      button(button),
+      led1(LED1)
+   { }
    void press();
    void release();
 private:
    USBMouse * mouse;
    uint8_t button;
+   DigitalOut led1;
 
 };
 

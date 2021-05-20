@@ -6,16 +6,13 @@
 template <typename T>
 class Debouncer{
 public:
-   Debouncer(PinName pin,EventQueue * theQueue, T* theObject, void(T::*theRiseFunction)(), void(T::*theFallFunction)(), float theDebounceDelay = 0.040 )
-   : interrupt(pin),
-     queue(theQueue),
-     object(theObject),
-     riseFunction(theRiseFunction),
-     fallFunction(theFallFunction),
-     debounceDelay(theDebounceDelay),
-     led1(LED1),
-     led2(LED2),
-     led3(LED3)
+   Debouncer(PinName pin,EventQueue * theQueue, T* theObject, void(T::*theRiseFunction)(), void(T::*theFallFunction)(), float theDebounceDelay = 0.020 )
+    : interrupt(pin),
+      queue(theQueue),
+      object(theObject),
+      riseFunction(theRiseFunction),
+      fallFunction(theFallFunction),
+      debounceDelay(theDebounceDelay)
    {
       interrupt.rise(callback(this, &Debouncer::rise));
       interrupt.fall(callback(this, &Debouncer::fall));
@@ -34,10 +31,6 @@ private:
    void (T::*riseFunction)();
    void (T::*fallFunction)();
    float debounceDelay;
-
-   DigitalOut led1;
-   DigitalOut led2;
-   DigitalOut led3;
 
    Timeout riseDelay;
    Timeout fallDelay;
@@ -59,13 +52,11 @@ private:
 template <typename T>
 void Debouncer<T>::notifyRise() {
    (object->*riseFunction)();
-   led3 = ON;
 }
 
 template <typename T>
 void Debouncer<T>::notifyFall() {
    (object->*fallFunction)();
-   led3 = OFF;
 }
 
 template <typename T>
@@ -73,7 +64,6 @@ void Debouncer<T>::checkRise() {
    riseDelay.detach();
    risen = interrupt.read();
    if (risen) {
-      led2 = ON;
       fallen = false;
       queue->call(callback(this,&Debouncer<T>::notifyRise));
    }
@@ -85,7 +75,6 @@ void Debouncer<T>::checkFall() {
    fallDelay.detach();
    fallen = ! interrupt.read();
    if (fallen) {
-      led2 = OFF;
       risen = false;
       queue->call(callback(this,&Debouncer<T>::notifyFall));
    }
@@ -95,8 +84,7 @@ void Debouncer<T>::checkFall() {
 template <typename T>
 void Debouncer<T>::rise() {
    if (! rising) {
-      led1= ON;
-      riseDelay.attach(callback(this,&Debouncer<T>::checkRise), 0.040);
+      riseDelay.attach(callback(this,&Debouncer<T>::checkRise), 0.020);
       rising = true;
    }
 }
@@ -104,8 +92,7 @@ void Debouncer<T>::rise() {
 template <typename T>
 void Debouncer<T>::fall() {
    if (! falling) {
-      led1 = OFF;
-      fallDelay.attach(callback(this,&Debouncer<T>::checkFall), 0.040);
+      fallDelay.attach(callback(this,&Debouncer<T>::checkFall), 0.020);
       falling = true;
    }
 }
