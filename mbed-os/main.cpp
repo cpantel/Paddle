@@ -8,7 +8,7 @@
 Serial uartUsb(USBTX, USBRX);
 
 int main() {
-    uartUsb.printf("\r\nSlither USB version 0.1.15\r\n");
+    uartUsb.printf("\r\nSlither USB version 0.1.20\r\n");
 
     EventQueue queue;
     Thread eventThread;
