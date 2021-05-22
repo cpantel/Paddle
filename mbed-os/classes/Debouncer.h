@@ -84,7 +84,7 @@ void Debouncer<T>::checkFall() {
 template <typename T>
 void Debouncer<T>::rise() {
    if (! rising) {
-      riseDelay.attach(callback(this,&Debouncer<T>::checkRise), 0.001);
+      riseDelay.attach(callback(this,&Debouncer<T>::checkRise), 0.002);
       rising = true;
    }
 }
@@ -92,7 +92,7 @@ void Debouncer<T>::rise() {
 template <typename T>
 void Debouncer<T>::fall() {
    if (! falling) {
-      fallDelay.attach(callback(this,&Debouncer<T>::checkFall), 0.001);
+      fallDelay.attach(callback(this,&Debouncer<T>::checkFall), 0.002);
       falling = true;
    }
 }
