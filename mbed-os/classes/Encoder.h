@@ -14,8 +14,8 @@ class Encoder {
 public:
    Encoder(USBMouse * mouse):
       mouse(mouse),
-      led2(LED2),  // LED2 D7
-      led3(LED3)   // LED3 D5
+      led2(D7),  // LED2 D7
+      led3(D5)   // LED3 D5
    {
 
       state = StateName::ONE_ONE;
@@ -25,6 +25,7 @@ public:
       y = 0.0;
       radius = 100.0;
       step = 0;
+      mistaken = 0;
       buildLookup();
 
    }
@@ -53,6 +54,8 @@ private:
 
    bool clk;
    bool dt;
+
+   bool mistaken;
 
    void process();
    void moveCCW();

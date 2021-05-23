@@ -36,16 +36,18 @@ void Encoder::adjustStep(int delta) {
 }
 
 void Encoder::moveCCW(){
+  // if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
    //usbUart->printf("    moveCCW\r\n");
    prevStep = step;
    prevDirection = direction;
    adjustStep(-1);
    direction = DirectionName::CCW;
-   led2 = OFF;
-   led3 = OFF;
+   //led2 = OFF;
+   //led3 = OFF;
 }
 
 void Encoder::moveCW(){
+  // if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
    //usbUart->printf("    moveCW\r\n");
    prevStep = step;
    prevDirection = direction;
@@ -53,33 +55,32 @@ void Encoder::moveCW(){
    direction = DirectionName::CW;
 
 
-   led2 = OFF;
-   led3 = OFF;
+   //led2 = OFF;
+   //led3 = OFF;
 }
 
 void Encoder::dontMove(){
-   //usbUart->printf("    dontMove\r\n");
-   led2 = ON;
+
 }
 
 void Encoder::itsAMistake(){
-   usbUart->printf("    itsAMistake\r\n");
-   led3 = ON;
+   //usbUart->printf("    itsAMistake\r\n");
+  // mistaken = !mistaken;
+  // led3 = mistaken;
 }
 
 void Encoder::lookup(){
+   //   if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
    float32_t dir;
    if (direction != prevDirection) {
-     usbUart->printf("CCW ??? CW\r\n");
      dir = prevDirection == DirectionName::CW ? -1.0 : 1.0;
-
-
-     wait(0.25);
      mouse->move(moves[prevStep][0] * radius * dir, moves[prevStep][1] * radius * dir);
+     wait(.08);
    }
    dir = direction == DirectionName::CW ? 1.0 : -1.0;
    mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
-   usbUart->printf("      step: %d \r\n", step);
+
+   //usbUart->printf("      step: %d \r\n", step);
 }
 
 void Encoder::buildLookup(){
@@ -106,10 +107,9 @@ void Encoder::process() {
 
    uint16_t  last_step  = step;
 
-   //led2 = clk;
-   //led3 = dt;
+   led2 = dt;
+   led3 = clk;
 
-//   return;
 
    if (clk && dt ) {
       nextState = StateName::ONE_ONE;
