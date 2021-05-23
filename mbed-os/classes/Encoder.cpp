@@ -72,13 +72,21 @@ void Encoder::itsAMistake(){
 void Encoder::lookup(){
    //   if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
    float32_t dir;
+   int16_t rev_x = 0;
+   int16_t rev_y = 0;
    if (direction != prevDirection) {
      dir = prevDirection == DirectionName::CW ? -1.0 : 1.0;
-     mouse->move(moves[prevStep][0] * radius * dir, moves[prevStep][1] * radius * dir);
-     wait(.08);
+     rev_x = moves[prevStep][0] * radius * dir;
+     rev_y = moves[prevStep][1] * radius * dir;
+//     mouse->move(moves[prevStep][0] * radius * dir, moves[prevStep][1] * radius * dir);
+//     wait(.08);
    }
    dir = direction == DirectionName::CW ? 1.0 : -1.0;
-   mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
+//   mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
+   mouse->move(
+      moves[step][0] * radius * dir + rev_x,
+      moves[step][1] * radius * dir + rev_y
+   );
 
    //usbUart->printf("      step: %d \r\n", step);
 }

@@ -24,7 +24,7 @@ int main() {
     MouseClick leftButton(&mouse, MOUSE_LEFT);
     Encoder encoder(&mouse);
 
-    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release); // BUTTON1/ PC_10
+    Debouncer<MouseClick> leftButtonDebouncer(BUTTON1, &queue, &leftButton, &MouseClick::press, &MouseClick::release, 0.10); // BUTTON1/ PC_10
     Debouncer<Encoder> clkEncoderDebouncer(PC_8, &queue, &encoder, &Encoder::clkUp, &Encoder::clkDown);  //PC_8
     Debouncer<Encoder> dtEncoderDebouncer(PC_9, &queue, &encoder, &Encoder::dtUp, &Encoder::dtDown);     //PC_9
     encoder.setSerial(&uartUsb);
