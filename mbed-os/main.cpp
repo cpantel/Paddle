@@ -5,21 +5,21 @@
 #include "arm_math.h"
 
 #define STEPS 30
-#define DELAY 0.05
+#define DELAY 0.08
 
 
     Serial uartUsb(USBTX, USBRX);
 int16_t fixStep(int16_t step) {
     if (step == STEPS) {
-      uartUsb.printf("  ==  STEPS \r\n");
+      //uartUsb.printf("  ==  STEPS \r\n");
       return 0;
     }
     if (step > STEPS) {
-      uartUsb.printf("  >  STEPS \r\n");
+      //uartUsb.printf("  >  STEPS \r\n");
       return ( step - STEPS);
     }
     if (step < 0) {
-      uartUsb.printf("  <  STEPS \r\n");
+      //uartUsb.printf("  <  STEPS \r\n");
       return (step + STEPS);
     }
     return step;
@@ -72,7 +72,7 @@ int main() {
    while (idx < 30)  {
       for (pos = 0; pos < moveDuration[idx]; ++pos) {
         step = fixStep(step);
-        uartUsb.printf("+ pos : %d duration: %d step : %d delta x : %.4f delta y : %.4f\r\n", pos, moveDuration[idx], step, moves[step][0], moves[step][1]);
+        //uartUsb.printf("+ pos : %d duration: %d step : %d delta x : %.4f delta y : %.4f\r\n", pos, moveDuration[idx], step, moves[step][0], moves[step][1]);
         mouse.move(moves[step][0] * radius * 1, moves[step][1] * radius * 1);
         wait(DELAY);
 
@@ -83,7 +83,7 @@ int main() {
       ++idx;
       for (pos = 0;  pos < moveDuration[idx]; ++pos) {
 
-        uartUsb.printf("- pos : %d duration: %d step : %d delta x : %.4f delta y : %.4f\r\n", pos, moveDuration[idx], step, moves[step][0], moves[step][1]);
+        //uartUsb.printf("- pos : %d duration: %d step : %d delta x : %.4f delta y : %.4f\r\n", pos, moveDuration[idx], step, moves[step][0], moves[step][1]);
         mouse.move(moves[step][0] * radius * -1, moves[step][1] * radius * -1);
         wait(DELAY);
 
@@ -93,7 +93,7 @@ int main() {
 
         step =fixStep(step +1);
       ++idx;
-    wait(0.5);
+    wait(DELAY);
 
 
    }
