@@ -42,12 +42,14 @@ private:
 
    StateName state;
    DirectionName direction;
+   DirectionName prevDirection;
 
    float32_t x;
    float32_t y;
    float32_t moves[STEPS][2];
    float32_t radius;
    int16_t step;
+   int16_t prevStep;
 
    bool clk;
    bool dt;
@@ -55,9 +57,9 @@ private:
    void process();
    void moveCCW();
    void moveCW();
+   void adjustStep(int delta);
    void dontMove();
    void itsAMistake();
-   void jit();
    void buildLookup();
    void lookup();
 

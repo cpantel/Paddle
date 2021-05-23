@@ -22,12 +22,24 @@ void Encoder::dtDown(){
    process();
 }
 
+void Encoder::adjustStep(int delta) {
+   step += delta;
+   if (step == STEPS) {
+      step = 0;
+   }
+   if (step > STEPS) {
+      step -= STEPS;
+   }
+   if (step < 0) {
+      step += STEPS;
+   }
+}
+
 void Encoder::moveCCW(){
    //usbUart->printf("    moveCCW\r\n");
-   step -= 1;
-   if (step < 0)
-      step += STEPS;
-//   step = step%STEPS;
+   prevStep = step;
+   prevDirection = direction;
+   adjustStep(-1);
    direction = DirectionName::CCW;
    led2 = OFF;
    led3 = OFF;
@@ -35,9 +47,12 @@ void Encoder::moveCCW(){
 
 void Encoder::moveCW(){
    //usbUart->printf("    moveCW\r\n");
-   step += 1;
-   step = step%STEPS;
+   prevStep = step;
+   prevDirection = direction;
+   adjustStep(+1);
    direction = DirectionName::CW;
+
+
    led2 = OFF;
    led3 = OFF;
 }
@@ -48,27 +63,23 @@ void Encoder::dontMove(){
 }
 
 void Encoder::itsAMistake(){
-   //usbUart->printf("    itsAMistake\r\n");
+   usbUart->printf("    itsAMistake\r\n");
    led3 = ON;
 }
 
-void Encoder::jit(){
-   float32_t  last_x =   x;
-   float32_t  last_y =   y;
-
-   float32_t radian = (step * 6.0 / 360.0 ) * ( 2.0 *  3.14159);
-
-   x = cos(radian)*radius;
-   y = sin(radian)*radius;
-
-
-   mouse->move(x -last_x, y - last_y);
-}
-
 void Encoder::lookup(){
-   float32_t dir = direction == DirectionName::CW ? 1.0 : -1.0;
+   float32_t dir;
+   if (direction != prevDirection) {
+     usbUart->printf("CCW ??? CW\r\n");
+     dir = prevDirection == DirectionName::CW ? -1.0 : 1.0;
+
+
+     wait(0.25);
+     mouse->move(moves[prevStep][0] * radius * dir, moves[prevStep][1] * radius * dir);
+   }
+   dir = direction == DirectionName::CW ? 1.0 : -1.0;
    mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
-   //usbUart->printf("      step: %d \r\n", step);
+   usbUart->printf("      step: %d \r\n", step);
 }
 
 void Encoder::buildLookup(){
