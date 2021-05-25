@@ -107,25 +107,18 @@ void Encoder::lookup(){
      dir = prevDirection == DirectionName::CW ? -1.0 : 1.0;
      rev_x = moves[prevStep][0] * radius * dir;
      rev_y = moves[prevStep][1] * radius * dir;
-//     mouse->move(moves[prevStep][0] * radius * dir, moves[prevStep][1] * radius * dir);
-//     wait(.08);
    }
    dir = direction == DirectionName::CW ? 1.0 : -1.0;
-//   mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
+   bool adquired = false;
 
-   if ( semaphore->try_acquire() ) {
-      accum_x += moves[step][0] * radius * dir + rev_x;
-      accum_y += moves[step][1] * radius * dir + rev_y;
-      semaphore->release();
+   while ( ! adquired) {
+      adquired = semaphore->try_acquire();
+      if ( adquired ) {
+         accum_x += moves[step][0] * radius * dir + rev_x;
+         accum_y += moves[step][1] * radius * dir + rev_y;
+         semaphore->release();
+      }
    }
-
-
-//   mouse->move(
-//      moves[step][0] * radius * dir + rev_x,
-//      moves[step][1] * radius * dir + rev_y
-//   );
-
-   //usbUart->printf("      step: %d \r\n", step);
 }
 
 void Encoder::buildLookup(){
@@ -220,9 +213,6 @@ void Encoder::process() {
 
    // radius = analogRead;
    if (last_step != step) {
-     //jit();
-     lookup();
-
-
+     lookupQueue->call(callback(this,&Encoder::lookup));
    }
 }
