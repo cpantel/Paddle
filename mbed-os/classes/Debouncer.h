@@ -6,7 +6,7 @@
 template <typename T>
 class Debouncer{
 public:
-   Debouncer(PinName pin,EventQueue * theQueue, T* theObject, void(T::*theRiseFunction)(), void(T::*theFallFunction)(), float theDebounceDelay = 0.040 )
+   Debouncer(PinName pin, EventQueue * theQueue, T* theObject, void(T::*theRiseFunction)(), void(T::*theFallFunction)(), float theDebounceDelay = 0.040 )
     : interrupt(pin),
       queue(theQueue),
       object(theObject),
@@ -65,7 +65,8 @@ void Debouncer<T>::checkRise() {
    risen = interrupt.read();
    if (risen) {
       fallen = false;
-      queue->call(callback(this,&Debouncer<T>::notifyRise));
+      notifyRise();
+//      queue->call(callback(this,&Debouncer<T>::notifyRise));
    }
    rising = false;
 }
@@ -76,7 +77,8 @@ void Debouncer<T>::checkFall() {
    fallen = ! interrupt.read();
    if (fallen) {
       risen = false;
-      queue->call(callback(this,&Debouncer<T>::notifyFall));
+      notifyFall();
+//      queue->call(callback(this,&Debouncer<T>::notifyFall));
    }
    falling = false;
 }

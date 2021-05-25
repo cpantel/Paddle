@@ -69,6 +69,35 @@ void Encoder::itsAMistake(){
   // led3 = mistaken;
 }
 
+void Encoder::emit(int16_t x,int16_t y) {
+   if (x != 0 && y != 0)  {
+      mouse->move(x, y);
+     led03.write(~led03.read());
+   }
+}
+
+void Encoder::collect() {
+   bool update = false;
+   int16_t update_x;
+   int16_t update_y;
+
+   if ( semaphore->try_acquire() ) {
+      if (accum_x != 0 && accum_y != 0 ) {
+         update_x = accum_x;
+         update_y = accum_y;
+         accum_x = 0;
+         accum_y = 0;
+         update = true;
+      }
+      semaphore->release();
+      if (update) {
+         queue->call(callback(this,&Encoder::emit), update_x, update_y);
+         led01.write(~led03.read());
+      }
+   }
+}
+
+
 void Encoder::lookup(){
    //   if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
    float32_t dir;
@@ -83,10 +112,18 @@ void Encoder::lookup(){
    }
    dir = direction == DirectionName::CW ? 1.0 : -1.0;
 //   mouse->move(moves[step][0] * radius * dir, moves[step][1] * radius * dir);
-   mouse->move(
-      moves[step][0] * radius * dir + rev_x,
-      moves[step][1] * radius * dir + rev_y
-   );
+
+   if ( semaphore->try_acquire() ) {
+      accum_x += moves[step][0] * radius * dir + rev_x;
+      accum_y += moves[step][1] * radius * dir + rev_y;
+      semaphore->release();
+   }
+
+
+//   mouse->move(
+//      moves[step][0] * radius * dir + rev_x,
+//      moves[step][1] * radius * dir + rev_y
+//   );
 
    //usbUart->printf("      step: %d \r\n", step);
 }

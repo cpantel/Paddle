@@ -6,14 +6,19 @@
 #include "arm_math.h"
 
 
-#define STEPS 30
+#define STEPS 60
 
 enum class StateName {ONE_ONE, ZERO_ONE, ONE_ZERO, ZERO_ZERO};
 enum class DirectionName { CW, CCW };
 class Encoder {
 public:
-   Encoder(USBMouse * mouse):
+   Encoder(USBMouse * mouse, EventQueue * theQueue, Semaphore * theSemaphore):
       mouse(mouse),
+      queue(theQueue),
+      semaphore(theSemaphore),
+      led01(LED1),
+      led02(LED2),
+      led03(LED3),
       led2(D7),  // LED2 D7
       led3(D5)   // LED3 D5
    {
@@ -23,7 +28,7 @@ public:
       dt = true;
       x = 0.0;
       y = 0.0;
-      radius = 100.0;
+      radius = 150.0;
       step = 0;
       mistaken = 0;
       buildLookup();
@@ -33,17 +38,27 @@ public:
    void clkDown();
    void dtUp();
    void dtDown();
+   void collect();
+
    void setSerial(Serial * theUsbUart) {
      usbUart = theUsbUart;
    }
+
 private:
    USBMouse * mouse;
+   EventQueue * queue;
+   Semaphore * semaphore;
+   DigitalOut led01;
+   DigitalOut led02;
+   DigitalOut led03;
    DigitalOut led2;
    DigitalOut led3;
+
 
    StateName state;
    DirectionName direction;
    DirectionName prevDirection;
+
 
    float32_t x;
    float32_t y;
@@ -57,6 +72,7 @@ private:
 
    bool mistaken;
 
+   void emit(int16_t,int16_t);
    void process();
    void moveCCW();
    void moveCW();
@@ -66,7 +82,13 @@ private:
    void buildLookup();
    void lookup();
 
+
    Serial * usbUart;
+
+   int16_t accum_x;
+   int16_t accum_y;
+   int accum;
+
 
 };
 
