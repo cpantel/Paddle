@@ -39,7 +39,7 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := slitherUSBMouse
+PROJECT := USBPaddle
 
 
 # Project settings

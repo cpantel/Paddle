@@ -14,7 +14,7 @@ class Encoder {
 public:
    Encoder(USBMouse * mouse, EventQueue * theQueue, Semaphore * theSemaphore):
       mouse(mouse),
-      queue(theQueue),
+      emitQueue(theQueue),
       semaphore(theSemaphore),
       led01(LED1),
       led02(LED2),
@@ -46,7 +46,7 @@ public:
 
 private:
    USBMouse * mouse;
-   EventQueue * queue;
+   EventQueue * emitQueue;
    Semaphore * semaphore;
    DigitalOut led01;
    DigitalOut led02;

@@ -91,7 +91,7 @@ void Encoder::collect() {
       }
       semaphore->release();
       if (update) {
-         queue->call(callback(this,&Encoder::emit), update_x, update_y);
+         emitQueue->call(callback(this,&Encoder::emit), update_x, update_y);
          led01.write(~led03.read());
       }
    }
