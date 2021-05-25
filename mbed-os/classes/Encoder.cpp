@@ -100,22 +100,23 @@ void Encoder::collect() {
 
 void Encoder::lookup(){
    //   if ( state == StateName::ZERO_ONE | state == StateName::ONE_ZERO ) return;
-   float32_t dir;
+   float32_t fixed_radius;
+
    int16_t rev_x = 0;
    int16_t rev_y = 0;
    if (direction != prevDirection) {
-     dir = prevDirection == DirectionName::CW ? -1.0 : 1.0;
-     rev_x = moves[prevStep][0] * radius * dir;
-     rev_y = moves[prevStep][1] * radius * dir;
+     fixed_radius = prevDirection == DirectionName::CW ? -radius : radius;
+     rev_x = moves[prevStep][0] * fixed_radius;
+     rev_y = moves[prevStep][1] * fixed_radius;
    }
-   dir = direction == DirectionName::CW ? 1.0 : -1.0;
+   fixed_radius = direction == DirectionName::CW ? radius : -radius;
    bool adquired = false;
 
    while ( ! adquired) {
       adquired = semaphore->try_acquire();
       if ( adquired ) {
-         accum_x += moves[step][0] * radius * dir + rev_x;
-         accum_y += moves[step][1] * radius * dir + rev_y;
+         accum_x += moves[step][0] * fixed_radius + rev_x;
+         accum_y += moves[step][1] * fixed_radius + rev_y;
          semaphore->release();
       }
    }
