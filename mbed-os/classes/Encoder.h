@@ -12,16 +12,15 @@ enum class StateName {ONE_ONE, ZERO_ONE, ONE_ZERO, ZERO_ZERO};
 enum class DirectionName { CW, CCW };
 class Encoder {
 public:
-   Encoder(USBMouse * mouse, EventQueue * theEmitQueue, EventQueue * theLookupQueue, Semaphore * theSemaphore):
+   Encoder(USBMouse * mouse, EventQueue * theLookupQueue, Semaphore * theSemaphore):
       mouse(mouse),
-      emitQueue(theEmitQueue),
       lookupQueue(theLookupQueue),
-      semaphore(theSemaphore),
-      led01(LED1),
+      semaphore(theSemaphore)
+/*,      led01(LED1),
       led02(LED2),
       led03(LED3),
       led2(D7),  // LED2 D7
-      led3(D5)   // LED3 D5
+      led3(D5)   // LED3 D5 */
    {
 
       state = StateName::ONE_ONE;
@@ -47,14 +46,13 @@ public:
 
 private:
    USBMouse * mouse;
-   EventQueue * emitQueue;
    EventQueue * lookupQueue;
    Semaphore * semaphore;
-   DigitalOut led01;
-   DigitalOut led02;
-   DigitalOut led03;
-   DigitalOut led2;
-   DigitalOut led3;
+// DigitalOut led01;
+// DigitalOut led02;
+// DigitalOut led03;
+// DigitalOut led2;
+// DigitalOut led3;
 
 
    StateName state;

@@ -72,7 +72,7 @@ void Encoder::itsAMistake(){
 void Encoder::emit(int16_t x,int16_t y) {
    if (x != 0 && y != 0)  {
       mouse->move(x, y);
-     led03.write(~led03.read());
+//     led03.write(~led03.read());
    }
 }
 
@@ -91,8 +91,8 @@ void Encoder::collect() {
       }
       semaphore->release();
       if (update) {
-         emitQueue->call(callback(this,&Encoder::emit), update_x, update_y);
-         led01.write(~led03.read());
+         lookupQueue->call(callback(this,&Encoder::emit), update_x, update_y);
+//         led01.write(~led03.read());
       }
    }
 }
@@ -146,8 +146,8 @@ void Encoder::process() {
 
    uint16_t  last_step  = step;
 
-   led2 = dt;
-   led3 = clk;
+//   led2 = dt;
+//   led3 = clk;
 
 
    if (clk && dt ) {
